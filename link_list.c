@@ -8,7 +8,7 @@ typedef struct Node {
 } Node;
 
 
-void Unhift(Node **head_pointer, int data)
+void Unshift(Node **head_pointer, int data)
 {
     Node *new_node = (Node *) malloc(sizeof(Node));
     new_node->data = data;
@@ -108,13 +108,67 @@ void InsertAt(Node **head_pointer, int data, int position)
     new_node->next = NULL;
 
     Node *temp = *head_pointer;
+
+    if (position == 0)
+    {
+        new_node->next = temp;
+        *head_pointer = new_node;
+        return;
+    }
+
     for (int i = 0; i < position - 1; i++)
     {
         temp = temp->next;
     }
 
+    
+
     new_node->next = temp->next;
     temp->next = new_node;
+}
+
+
+void RemoveAt(Node **head_pointer, int position)
+{
+    Node *temp = *head_pointer;
+
+    if (position == 0)
+    {
+        *head_pointer = temp->next;
+        free(temp);
+        return;
+    }
+
+    for (int i = 0; i < position - 1; i++)
+    {
+        temp = temp->next;
+    }
+
+    Node *temp_to_free = temp->next;
+    temp->next = temp->next->next;
+    free(temp_to_free);
+}
+
+
+int PeakAt(Node **head_pointer, int position)
+{
+    if (*head_pointer == NULL)
+    {
+        return -1;
+    }
+
+    Node *temp = *head_pointer;
+    for (int i = 0; i < position; i++)
+    {
+        temp = temp->next;
+
+        if (temp == NULL)
+        {
+            return -1;
+        }
+    }
+
+    return temp->data;
 }
 
 
@@ -136,9 +190,9 @@ int main()
 {
     Node *head = NULL;
 
-    Unhift(&head, 10);
-    Unhift(&head, 25);
-    Unhift(&head, 30);
+    Unshift(&head, 10);
+    Unshift(&head, 25);
+    Unshift(&head, 30);
     
     Print(&head);
     InsertAt(&head, 99, 1);
@@ -166,6 +220,32 @@ int main()
     Print(&head);
     printf("(Pop: %d)\n", Pop(&head));
     Print(&head);
+
+    printf("(Pop: %d)\n", Pop(&head));
+    printf("(Shift: %d)\n", Shift(&head));
+
+    Push(&head, 11);
+    Push(&head, 22);
+    Push(&head, 33);
+    Push(&head, 44);
+    Push(&head, 55);
+    Print(&head);
+    printf("%d\n", PeakAt(&head, 0));
+    printf("%d\n", PeakAt(&head, 2));
+    printf("%d\n", PeakAt(&head, 4));
+    printf("%d\n", PeakAt(&head, 5));
+
+    Print(&head);
+    RemoveAt(&head, 1);
+    Print(&head);
+    RemoveAt(&head, 3);
+    Print(&head);
+    RemoveAt(&head, 0);
+    Print(&head);
+
+    InsertAt(&head, 99, 0);
+    Print(&head);
+
 
     return 0;
 }
